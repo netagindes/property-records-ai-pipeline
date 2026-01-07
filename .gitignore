@@ -1,9 +1,11 @@
 # Documentation 
 docs/*
+data/*
 
 # Environment
 *.lock
 .env
+.ruff_cache/
 
 # Cursor
 .cursor/
