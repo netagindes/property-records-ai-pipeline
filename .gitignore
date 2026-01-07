@@ -1,0 +1,13 @@
+# Documentation 
+docs/*
+
+# Environment
+*.lock
+.env
+
+# Cursor
+.cursor/
+.idea/
+
+# Scripts
+assessment_solution/scripts/*

@@ -1,0 +1,47 @@
+[project]
+name = "property-records-ai-pipeline"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "netagindes",email = "neta.gindes@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+]
+
+[tool.poetry]
+packages = [
+    { include = "assessment_solution" },
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py39"]
+
+[tool.isort]  # TODO: Do i need this?
+profile = "black"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+extend-exclude = ["assessment_solution/outputs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+skip-magic-trailing-comma = false
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "black (==24.10.0)",
+    "ruff (==0.6.7)"
+]
