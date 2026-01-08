@@ -1,3 +1,5 @@
+*pycache*
+
 # Documentation 
 docs/*
 data/*
@@ -6,6 +8,7 @@ data/*
 *.lock
 .env
 .ruff_cache/
+.vscode/
 
 # Cursor
 .cursor/
