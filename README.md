@@ -10,7 +10,7 @@
 
 ```bash
 cd PATH_TO_SAVE  # TODO: Change to your project path
-git git@github.com:netagindes/property-records-ai-pipeline.git  # [1] Clone to the project's GitHub repository
+git clone git@github.com:netagindes/property-records-ai-pipeline.git  # [1] Clone to the project's GitHub repository
 cd property-records-ai-pipeline.git
 
 # [2] Create data folder in the project root and add all content form: [Assessment Data - Google Drive](https://drive.google.com/drive/folders/1fL3eSt1SGYTk4lROcs-Hfab3u4lGjch4)
