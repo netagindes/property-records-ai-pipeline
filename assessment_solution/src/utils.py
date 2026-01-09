@@ -251,19 +251,35 @@ def infer_instrument_pattern(raw_value: str) -> tuple[str, str]:
         prefix = prefix_candidate
         remainder = remainder[2:]
 
-    prefix_label = f"{prefix}-" if prefix else ""
     prefix_regex = re.escape(prefix) if prefix else ""
 
-    if YEAR_HYPHEN_PATTERN.fullmatch(remainder):
-        return f"{prefix_label}YYYY-N{{5-7}}", rf"^{prefix_regex}\d{{4}}-\d{{5,7}}$"
-    if YEAR_COMPACT_PATTERN.fullmatch(remainder):
-        return f"{prefix_label}YYYYN{{5-7}}", rf"^{prefix_regex}\d{{4}}\d{{5,7}}$"
+    def wrap(body: str) -> tuple[str, str]:
+        """Return pattern (no anchors) and anchored regex with optional prefix."""
+
+        full_body = f"{prefix_regex}{body}"
+        return full_body, rf"^{full_body}$"
+
+    # Year-prefixed with hyphen (separate buckets for 5/6/7 digits).
+    if re.fullmatch(r"\d{4}-\d{5}", remainder):
+        return wrap(r"\d{4}-\d{5}")
+    if re.fullmatch(r"\d{4}-\d{6}", remainder):
+        return wrap(r"\d{4}-\d{6}")
+    if re.fullmatch(r"\d{4}-\d{7}", remainder):
+        return wrap(r"\d{4}-\d{7}")
+
+    # Year-prefixed compact (no separator).
+    if re.fullmatch(r"\d{4}\d{5}", remainder):
+        return wrap(r"\d{4}\d{5}")
+    if re.fullmatch(r"\d{4}\d{6}", remainder):
+        return wrap(r"\d{4}\d{6}")
+    if re.fullmatch(r"\d{4}\d{7}", remainder):
+        return wrap(r"\d{4}\d{7}")
+
+    # Pure numeric.
     if remainder.isdigit():
         digit_len = len(remainder)
-        return (
-            f"{prefix_label}digits-{digit_len}",
-            rf"^{prefix_regex}\d{{{digit_len}}}$",
-        )
+        return wrap(rf"\d{{{digit_len}}}")
 
-    label, regex_body = tokenize_mixed(remainder)
-    return f"{prefix_label}{label}", rf"^{prefix_regex}{regex_body}$"
+    # Fallback to mixed tokenization.
+    _, regex_body = tokenize_mixed(remainder)
+    return wrap(regex_body)

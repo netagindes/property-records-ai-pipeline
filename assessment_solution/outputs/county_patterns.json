@@ -1,6 +1,31 @@
 {
   "alamance": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 82,
+        "example": {
+          "book": "83",
+          "page": "24"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 92.135
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 7,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 7.865
+      }
+    ],
     "date_range": {
       "anomalies": [
         "2065-10-28T21:00:00"
@@ -9,202 +34,290 @@
       "latest": "2065-10-28"
     },
     "doc_type_distribution": {
-      "Assignment of Deed of Trust": 4,
+      "ASSIGNMENT OF DEED OF TRUST": 5,
       "CANCEL": 3,
       "D T": 6,
-      "DEED": 17,
-      "Deed of Trust": 11,
-      "Easement": 4,
-      "General Warranty Deed": 3,
-      "Plat": 4,
-      "Special Warranty Deed": 3,
-      "Substitution of Trustee": 3
+      "DEED": 19,
+      "DEED OF TRUST": 11,
+      "EASEMENT": 4,
+      "GENERAL WARRANTY DEED": 3,
+      "PLAT": 6,
+      "SPECIAL WARRANTY DEED": 3,
+      "SUBSTITUTION OF TRUSTEE": 3
     },
     "instrument_patterns": [
       {
         "count": 38,
-        "example": "bp4712143",
-        "pattern": "bp-digits-7",
+        "example": "BP4712143",
+        "pattern": "bp\\d{7}",
         "percentage": 42.697,
         "regex": "^bp\\d{7}$"
       },
       {
-        "count": 14,
+        "count": 12,
         "example": "12796",
-        "pattern": "digits-5",
-        "percentage": 15.73,
+        "pattern": "\\d{5}",
+        "percentage": 13.483,
         "regex": "^\\d{5}$"
       },
       {
         "count": 12,
-        "example": "bp509826",
-        "pattern": "bp-digits-6",
+        "example": "BP509826",
+        "pattern": "bp\\d{6}",
         "percentage": 13.483,
         "regex": "^bp\\d{6}$"
       },
       {
         "count": 7,
-        "example": "bp09060701",
-        "pattern": "bp-digits-8",
+        "example": "BP09060701",
+        "pattern": "bp\\d{8}",
         "percentage": 7.865,
         "regex": "^bp\\d{8}$"
       },
       {
-        "count": 6,
+        "count": 5,
         "example": "5628",
-        "pattern": "digits-4",
-        "percentage": 6.742,
+        "pattern": "\\d{4}",
+        "percentage": 5.618,
         "regex": "^\\d{4}$"
       },
       {
         "count": 3,
         "example": "009833350002",
-        "pattern": "digits-12",
+        "pattern": "\\d{12}",
         "percentage": 3.371,
         "regex": "^\\d{12}$"
       },
       {
         "count": 2,
-        "example": "bp8324",
-        "pattern": "bp-digits-4",
+        "example": "20562",
+        "pattern": "\\d{5}",
+        "percentage": 2.247,
+        "regex": "^\\d{5}$"
+      },
+      {
+        "count": 2,
+        "example": "BP8324",
+        "pattern": "bp\\d{4}",
         "percentage": 2.247,
         "regex": "^bp\\d{4}$"
       },
       {
         "count": 2,
-        "example": "bp84110",
-        "pattern": "bp-digits-5",
+        "example": "BP84110",
+        "pattern": "bp\\d{5}",
         "percentage": 2.247,
         "regex": "^bp\\d{5}$"
       },
       {
         "count": 1,
-        "example": "035528-000012/153082 v2",
-        "pattern": "N6-X1-N6-X1-N6-X1-A1-N1",
-        "percentage": 1.124,
-        "regex": "^\\d{6}\\-\\d{6}/\\d{6}\\ [A-Za-z]{1}\\d{1}$"
-      },
-      {
-        "count": 1,
-        "example": "bp67770123565",
-        "pattern": "bp-YYYYN{5-7}",
-        "percentage": 1.124,
-        "regex": "^bp\\d{4}\\d{5,7}$"
-      },
-      {
-        "count": 1,
         "example": "59",
-        "pattern": "digits-2",
+        "pattern": "\\d{2}",
         "percentage": 1.124,
         "regex": "^\\d{2}$"
       },
       {
         "count": 1,
         "example": "107",
-        "pattern": "digits-3",
+        "pattern": "\\d{3}",
         "percentage": 1.124,
         "regex": "^\\d{3}$"
       },
       {
         "count": 1,
+        "example": "2076",
+        "pattern": "\\d{4}",
+        "percentage": 1.124,
+        "regex": "^\\d{4}$"
+      },
+      {
+        "count": 1,
         "example": "108376",
-        "pattern": "digits-6",
+        "pattern": "\\d{6}",
         "percentage": 1.124,
         "regex": "^\\d{6}$"
+      },
+      {
+        "count": 1,
+        "example": "035528-000012/153082 V2",
+        "pattern": "\\d{6}\\-\\d{6}/\\d{6}\\ [A-Za-z]{1}\\d{1}",
+        "percentage": 1.124,
+        "regex": "^\\d{6}\\-\\d{6}/\\d{6}\\ [A-Za-z]{1}\\d{1}$"
+      },
+      {
+        "count": 1,
+        "example": "BP67770123565",
+        "pattern": "bp\\d{4}\\d{7}",
+        "percentage": 1.124,
+        "regex": "^bp\\d{4}\\d{7}$"
       }
     ],
     "record_count": 89,
-    "unique_doc_types": 33
+    "unique_doc_types": 30
   },
   "buncombe": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 115,
+        "example": {
+          "book": "6007",
+          "page": "1122"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 88.462
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 14,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 10.769
+      },
+      {
+        "book_pattern": "alnum",
+        "book_regex": "^[A-Za-z0-9]+$",
+        "count": 1,
+        "example": {
+          "book": "K5551",
+          "page": "1790"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 0.769
+      }
+    ],
     "date_range": {
       "anomalies": [],
       "earliest": "1973-05-17",
       "latest": "2025-11-12"
     },
     "doc_type_distribution": {
-      "Covenants and Restrictions": 4,
-      "DEED": 25,
-      "DEED OF TRUST": 23,
+      "COVENANTS AND RESTRICTIONS": 4,
+      "DEED": 27,
+      "DEED OF TRUST": 29,
       "DEED OF TRUST SATISFACTION": 9,
-      "Deed of Trust": 6,
-      "POWER OF ATTORNEY": 7,
-      "Plat": 7,
-      "QUIT CLAIM DEED": 3,
-      "Satisfaction": 5,
-      "UCC Financing Statement": 10
+      "DOING BUSINESS AS CERTIFICATE": 3,
+      "PLAT": 9,
+      "POWER OF ATTORNEY": 8,
+      "QUIT CLAIM DEED": 4,
+      "SATISFACTION": 5,
+      "UCC FINANCING STATEMENT": 10
     },
     "instrument_patterns": [
       {
         "count": 68,
-        "example": "bp6206902",
-        "pattern": "bp-digits-7",
+        "example": "BP6206902",
+        "pattern": "bp\\d{7}",
         "percentage": 52.308,
         "regex": "^bp\\d{7}$"
       },
       {
         "count": 36,
-        "example": "bp60071122",
-        "pattern": "bp-digits-8",
+        "example": "BP60071122",
+        "pattern": "bp\\d{8}",
         "percentage": 27.692,
         "regex": "^bp\\d{8}$"
       },
       {
         "count": 12,
-        "example": "bp790583",
-        "pattern": "bp-digits-6",
+        "example": "BP790583",
+        "pattern": "bp\\d{6}",
         "percentage": 9.231,
         "regex": "^bp\\d{6}$"
       },
       {
         "count": 4,
-        "example": "bp3672",
-        "pattern": "bp-digits-4",
+        "example": "BP3672",
+        "pattern": "bp\\d{4}",
         "percentage": 3.077,
         "regex": "^bp\\d{4}$"
       },
       {
         "count": 3,
-        "example": "bp16963",
-        "pattern": "bp-digits-5",
-        "percentage": 2.308,
-        "regex": "^bp\\d{5}$"
-      },
-      {
-        "count": 3,
         "example": "023202190002",
-        "pattern": "digits-12",
+        "pattern": "\\d{12}",
         "percentage": 2.308,
         "regex": "^\\d{12}$"
       },
       {
+        "count": 3,
+        "example": "BP16963",
+        "pattern": "bp\\d{5}",
+        "percentage": 2.308,
+        "regex": "^bp\\d{5}$"
+      },
+      {
         "count": 2,
         "example": "20220062162E",
-        "pattern": "N11-A1",
+        "pattern": "\\d{11}[A-Za-z]{1}",
         "percentage": 1.538,
         "regex": "^\\d{11}[A-Za-z]{1}$"
       },
       {
         "count": 1,
         "example": "26350580001",
-        "pattern": "YYYYN{5-7}",
+        "pattern": "\\d{4}\\d{7}",
         "percentage": 0.769,
-        "regex": "^\\d{4}\\d{5,7}$"
+        "regex": "^\\d{4}\\d{7}$"
       },
       {
         "count": 1,
         "example": "7481033",
-        "pattern": "digits-7",
+        "pattern": "\\d{7}",
         "percentage": 0.769,
         "regex": "^\\d{7}$"
       }
     ],
     "record_count": 130,
-    "unique_doc_types": 30
+    "unique_doc_types": 25
   },
   "cabarrus": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 397,
+        "example": {
+          "book": "461",
+          "page": "689"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 97.066
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 11,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 2.689
+      },
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 1,
+        "example": {
+          "book": "464",
+          "page": "FAGE"
+        },
+        "page_pattern": "alnum",
+        "page_regex": "^[A-Za-z0-9]+$",
+        "percentage": 0.244
+      }
+    ],
     "date_range": {
       "anomalies": [
         "0390-03-24T19:17:15"
@@ -215,141 +328,197 @@
     "doc_type_distribution": {
       "ASIGN": 15,
       "D-TR": 45,
-      "DEED": 45,
-      "Deed": 12,
-      "Deed of Trust": 15,
-      "General Warranty Deed": 14,
+      "DEED": 57,
+      "DEED OF TRUST": 15,
+      "GENERAL WARRANTY DEED": 14,
       "MTGE": 21,
-      "PLAT": 16,
+      "PLAT": 26,
       "REST": 37,
-      "SAT": 27
+      "SAT": 27,
+      "SATISFACTION": 8
     },
     "instrument_patterns": [
       {
         "count": 282,
         "example": "1983-02828",
-        "pattern": "YYYY-N{5-7}",
+        "pattern": "\\d{4}-\\d{5}",
         "percentage": 68.949,
-        "regex": "^\\d{4}-\\d{5,7}$"
+        "regex": "^\\d{4}-\\d{5}$"
       },
       {
-        "count": 52,
-        "example": "20938",
-        "pattern": "digits-5",
-        "percentage": 12.714,
+        "count": 45,
+        "example": "02819",
+        "pattern": "\\d{5}",
+        "percentage": 11.002,
         "regex": "^\\d{5}$"
       },
       {
         "count": 23,
-        "example": "bp490575",
-        "pattern": "bp-digits-6",
+        "example": "BP490575",
+        "pattern": "bp\\d{6}",
         "percentage": 5.623,
         "regex": "^bp\\d{6}$"
       },
       {
         "count": 19,
-        "example": "bp9952806",
-        "pattern": "bp-digits-7",
+        "example": "BP9952806",
+        "pattern": "bp\\d{7}",
         "percentage": 4.645,
         "regex": "^bp\\d{7}$"
       },
       {
         "count": 10,
-        "example": "bp17476260",
-        "pattern": "bp-digits-8",
+        "example": "BP17476260",
+        "pattern": "bp\\d{8}",
         "percentage": 2.445,
         "regex": "^bp\\d{8}$"
       },
       {
+        "count": 7,
+        "example": "20938",
+        "pattern": "\\d{5}",
+        "percentage": 1.711,
+        "regex": "^\\d{5}$"
+      },
+      {
         "count": 6,
-        "example": "bp43555",
-        "pattern": "bp-digits-5",
+        "example": "BP43555",
+        "pattern": "bp\\d{5}",
         "percentage": 1.467,
         "regex": "^bp\\d{5}$"
       },
       {
         "count": 5,
-        "example": "bp1810",
-        "pattern": "bp-digits-4",
+        "example": "BP1810",
+        "pattern": "bp\\d{4}",
         "percentage": 1.222,
         "regex": "^bp\\d{4}$"
       },
       {
         "count": 2,
         "example": "25CV004518-770",
-        "pattern": "N2-A2-N6-X1-N3",
+        "pattern": "\\d{2}[A-Za-z]{2}\\d{6}\\-\\d{3}",
         "percentage": 0.489,
         "regex": "^\\d{2}[A-Za-z]{2}\\d{6}\\-\\d{3}$"
       },
       {
         "count": 2,
-        "example": "bp397",
-        "pattern": "bp-digits-3",
+        "example": "BP397",
+        "pattern": "bp\\d{3}",
         "percentage": 0.489,
         "regex": "^bp\\d{3}$"
       },
       {
         "count": 1,
         "example": "19M000359-000",
-        "pattern": "N2-A1-N6-X1-N3",
+        "pattern": "\\d{2}[A-Za-z]{1}\\d{6}\\-\\d{3}",
         "percentage": 0.244,
         "regex": "^\\d{2}[A-Za-z]{1}\\d{6}\\-\\d{3}$"
       },
       {
         "count": 1,
         "example": "96-1203.01",
-        "pattern": "N2-X1-N4-X1-N2",
+        "pattern": "\\d{2}\\-\\d{4}\\.\\d{2}",
         "percentage": 0.244,
         "regex": "^\\d{2}\\-\\d{4}\\.\\d{2}$"
       },
       {
         "count": 1,
         "example": "5154 0176",
-        "pattern": "N4-X1-N4",
+        "pattern": "\\d{4}\\ \\d{4}",
         "percentage": 0.244,
         "regex": "^\\d{4}\\ \\d{4}$"
       },
       {
         "count": 1,
+        "example": "1728802109",
+        "pattern": "\\d{4}\\d{6}",
+        "percentage": 0.244,
+        "regex": "^\\d{4}\\d{6}$"
+      },
+      {
+        "count": 1,
         "example": "13729 0336",
-        "pattern": "N5-X1-N4",
+        "pattern": "\\d{5}\\ \\d{4}",
         "percentage": 0.244,
         "regex": "^\\d{5}\\ \\d{4}$"
       },
       {
         "count": 1,
+        "example": "024983",
+        "pattern": "\\d{6}",
+        "percentage": 0.244,
+        "regex": "^\\d{6}$"
+      },
+      {
+        "count": 1,
         "example": "6732300K",
-        "pattern": "N7-A1",
+        "pattern": "\\d{7}[A-Za-z]{1}",
         "percentage": 0.244,
         "regex": "^\\d{7}[A-Za-z]{1}$"
       },
       {
         "count": 1,
-        "example": "1728802109",
-        "pattern": "YYYYN{5-7}",
-        "percentage": 0.244,
-        "regex": "^\\d{4}\\d{5,7}$"
-      },
-      {
-        "count": 1,
-        "example": "bp464FAGE",
-        "pattern": "bp-N3-A4",
+        "example": "BP464FAGE",
+        "pattern": "bp\\d{3}[A-Za-z]{4}",
         "percentage": 0.244,
         "regex": "^bp\\d{3}[A-Za-z]{4}$"
-      },
-      {
-        "count": 1,
-        "example": "024983",
-        "pattern": "digits-6",
-        "percentage": 0.244,
-        "regex": "^\\d{6}$"
       }
     ],
     "record_count": 409,
-    "unique_doc_types": 72
+    "unique_doc_types": 70
   },
   "cumberland": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 2476,
+        "example": {
+          "book": "7499",
+          "page": "283"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 99.879
+      },
+      {
+        "book_pattern": "alnum",
+        "book_regex": "^[A-Za-z0-9]+$",
+        "count": 1,
+        "example": {
+          "book": "A",
+          "page": "M"
+        },
+        "page_pattern": "alnum",
+        "page_regex": "^[A-Za-z0-9]+$",
+        "percentage": 0.04
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 1,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 0.04
+      },
+      {
+        "book_pattern": "mixed",
+        "book_regex": "^\\d{2}\\-\\d{4}$",
+        "count": 1,
+        "example": {
+          "book": "33-3006",
+          "page": "24"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 0.04
+      }
+    ],
     "date_range": {
       "anomalies": [
         "0050-09-22T19:17:15",
@@ -366,10 +535,10 @@
     "doc_type_distribution": {
       "CAN": 67,
       "D T": 95,
-      "DEED": 1192,
+      "DEED": 1194,
       "DT": 250,
       "ESMT": 52,
-      "PLAT": 54,
+      "PLAT": 68,
       "REL D": 65,
       "SAT": 102,
       "SUB TR": 76,
@@ -379,142 +548,162 @@
       {
         "count": 2336,
         "example": "2007-06494",
-        "pattern": "YYYY-N{5-7}",
+        "pattern": "\\d{4}-\\d{5}",
         "percentage": 94.232,
-        "regex": "^\\d{4}-\\d{5,7}$"
+        "regex": "^\\d{4}-\\d{5}$"
       },
       {
         "count": 53,
-        "example": "bp2868165",
-        "pattern": "bp-digits-7",
+        "example": "BP2868165",
+        "pattern": "bp\\d{7}",
         "percentage": 2.138,
         "regex": "^bp\\d{7}$"
       },
       {
-        "count": 29,
-        "example": "39919",
-        "pattern": "digits-5",
-        "percentage": 1.17,
-        "regex": "^\\d{5}$"
-      },
-      {
         "count": 28,
-        "example": "bp58940577",
-        "pattern": "bp-digits-8",
+        "example": "BP58940577",
+        "pattern": "bp\\d{8}",
         "percentage": 1.129,
         "regex": "^bp\\d{8}$"
       },
       {
+        "count": 26,
+        "example": "39919",
+        "pattern": "\\d{5}",
+        "percentage": 1.049,
+        "regex": "^\\d{5}$"
+      },
+      {
         "count": 8,
-        "example": "bp996466",
-        "pattern": "bp-digits-6",
+        "example": "BP996466",
+        "pattern": "bp\\d{6}",
         "percentage": 0.323,
         "regex": "^bp\\d{6}$"
       },
       {
         "count": 7,
-        "example": "bp3522",
-        "pattern": "bp-digits-4",
+        "example": "BP3522",
+        "pattern": "bp\\d{4}",
         "percentage": 0.282,
         "regex": "^bp\\d{4}$"
       },
       {
         "count": 3,
-        "example": "bp111650037",
-        "pattern": "bp-YYYYN{5-7}",
+        "example": "19078",
+        "pattern": "\\d{5}",
         "percentage": 0.121,
-        "regex": "^bp\\d{4}\\d{5,7}$"
+        "regex": "^\\d{5}$"
       },
       {
         "count": 3,
-        "example": "bp25184",
-        "pattern": "bp-digits-5",
+        "example": "BP111650037",
+        "pattern": "bp\\d{4}\\d{5}",
+        "percentage": 0.121,
+        "regex": "^bp\\d{4}\\d{5}$"
+      },
+      {
+        "count": 3,
+        "example": "BP25184",
+        "pattern": "bp\\d{5}",
         "percentage": 0.121,
         "regex": "^bp\\d{5}$"
       },
       {
         "count": 2,
         "example": "1136401538",
-        "pattern": "YYYYN{5-7}",
+        "pattern": "\\d{4}\\d{6}",
         "percentage": 0.081,
-        "regex": "^\\d{4}\\d{5,7}$"
+        "regex": "^\\d{4}\\d{6}$"
+      },
+      {
+        "count": 1,
+        "example": "BK 3592PG0595",
+        "pattern": "[A-Za-z]{2}\\ \\d{4}[A-Za-z]{2}\\d{4}",
+        "percentage": 0.04,
+        "regex": "^[A-Za-z]{2}\\ \\d{4}[A-Za-z]{2}\\d{4}$"
       },
       {
         "count": 1,
         "example": "BK7242PG572",
-        "pattern": "A2-N4-A2-N3",
+        "pattern": "[A-Za-z]{2}\\d{4}[A-Za-z]{2}\\d{3}",
         "percentage": 0.04,
         "regex": "^[A-Za-z]{2}\\d{4}[A-Za-z]{2}\\d{3}$"
       },
       {
         "count": 1,
         "example": "BK4630PG0547",
-        "pattern": "A2-N4-A2-N4",
+        "pattern": "[A-Za-z]{2}\\d{4}[A-Za-z]{2}\\d{4}",
         "percentage": 0.04,
         "regex": "^[A-Za-z]{2}\\d{4}[A-Za-z]{2}\\d{4}$"
       },
       {
         "count": 1,
-        "example": "BK 3592PG0595",
-        "pattern": "A2-X1-N4-A2-N4",
-        "percentage": 0.04,
-        "regex": "^[A-Za-z]{2}\\ \\d{4}[A-Za-z]{2}\\d{4}$"
-      },
-      {
-        "count": 1,
         "example": "20220173191K",
-        "pattern": "N11-A1",
+        "pattern": "\\d{11}[A-Za-z]{1}",
         "percentage": 0.04,
         "regex": "^\\d{11}[A-Za-z]{1}$"
       },
       {
         "count": 1,
         "example": "1986-7388J",
-        "pattern": "N4-X1-N4-A1",
+        "pattern": "\\d{4}\\-\\d{4}[A-Za-z]{1}",
         "percentage": 0.04,
         "regex": "^\\d{4}\\-\\d{4}[A-Za-z]{1}$"
       },
       {
         "count": 1,
         "example": "1961-08660187",
-        "pattern": "N4-X1-N8",
+        "pattern": "\\d{4}\\-\\d{8}",
         "percentage": 0.04,
         "regex": "^\\d{4}\\-\\d{8}$"
       },
       {
         "count": 1,
         "example": "19671015/",
-        "pattern": "N8-X1",
+        "pattern": "\\d{8}/",
         "percentage": 0.04,
         "regex": "^\\d{8}/$"
       },
       {
         "count": 1,
-        "example": "bpAM",
-        "pattern": "bp-A2",
+        "example": "BPAM",
+        "pattern": "bp[A-Za-z]{2}",
         "percentage": 0.04,
         "regex": "^bp[A-Za-z]{2}$"
       },
       {
         "count": 1,
-        "example": "bp33-300624",
-        "pattern": "bp-N2-X1-N6",
+        "example": "BP96",
+        "pattern": "bp\\d{2}",
         "percentage": 0.04,
-        "regex": "^bp\\d{2}\\-\\d{6}$"
+        "regex": "^bp\\d{2}$"
       },
       {
         "count": 1,
-        "example": "bp96",
-        "pattern": "bp-digits-2",
+        "example": "BP33-300624",
+        "pattern": "bp\\d{2}\\-\\d{6}",
         "percentage": 0.04,
-        "regex": "^bp\\d{2}$"
+        "regex": "^bp\\d{2}\\-\\d{6}$"
       }
     ],
     "record_count": 2479,
-    "unique_doc_types": 100
+    "unique_doc_types": 97
   },
   "davidson": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 23,
+        "example": {
+          "book": "2564",
+          "page": "151"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 100.0
+      }
+    ],
     "date_range": {
       "anomalies": [],
       "earliest": "2000-05-18",
@@ -527,8 +716,7 @@
       "DEED": 6,
       "DEED OF TRUST": 1,
       "LIEN": 1,
-      "PLAT": 1,
-      "Plat": 1,
+      "PLAT": 2,
       "SAT": 3,
       "SATISFACTION": 1
     },
@@ -536,43 +724,80 @@
       {
         "count": 19,
         "example": "2009000058173",
-        "pattern": "digits-13",
+        "pattern": "\\d{13}",
         "percentage": 82.609,
         "regex": "^\\d{13}$"
       },
       {
         "count": 3,
         "example": "2022019327",
-        "pattern": "YYYYN{5-7}",
+        "pattern": "\\d{4}\\d{6}",
         "percentage": 13.043,
-        "regex": "^\\d{4}\\d{5,7}$"
+        "regex": "^\\d{4}\\d{6}$"
       },
       {
         "count": 1,
-        "example": "bp512",
-        "pattern": "bp-digits-3",
+        "example": "BP512",
+        "pattern": "bp\\d{3}",
         "percentage": 4.348,
         "regex": "^bp\\d{3}$"
       }
     ],
     "record_count": 23,
-    "unique_doc_types": 10
+    "unique_doc_types": 9
   },
   "durham": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 488,
+        "example": {
+          "book": "6426",
+          "page": "890"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 99.389
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 2,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 0.407
+      },
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 1,
+        "example": {
+          "book": "142",
+          "page": "190-192"
+        },
+        "page_pattern": "mixed",
+        "page_regex": "^\\d{3}\\-\\d{3}$",
+        "percentage": 0.204
+      }
+    ],
     "date_range": {
       "anomalies": [],
       "earliest": "1971-03-07",
       "latest": "2025-11-11"
     },
     "doc_type_distribution": {
-      "ASSIGNMENT": 7,
-      "DECLARATION": 8,
+      "AMENDMENT": 6,
+      "ASSIGNMENT": 9,
+      "DECLARATION": 10,
       "DEED": 253,
-      "DEED OF TRUST": 44,
-      "Easement": 8,
-      "PLAT": 36,
-      "Plat": 26,
+      "DEED OF TRUST": 48,
+      "EASEMENT": 13,
+      "PLAT": 62,
       "RIGHT OF WAY": 9,
       "SATISFACTION": 25,
       "SEE INSTRUMENT": 6
@@ -581,58 +806,83 @@
       {
         "count": 462,
         "example": "2010005608",
-        "pattern": "YYYYN{5-7}",
+        "pattern": "\\d{4}\\d{6}",
         "percentage": 94.094,
-        "regex": "^\\d{4}\\d{5,7}$"
+        "regex": "^\\d{4}\\d{6}$"
       },
       {
         "count": 17,
         "example": "99015437",
-        "pattern": "digits-8",
+        "pattern": "\\d{8}",
         "percentage": 3.462,
         "regex": "^\\d{8}$"
       },
       {
         "count": 7,
-        "example": "bp136165",
-        "pattern": "bp-digits-6",
+        "example": "BP136165",
+        "pattern": "bp\\d{6}",
         "percentage": 1.426,
         "regex": "^bp\\d{6}$"
       },
       {
         "count": 2,
-        "example": "bp2604347",
-        "pattern": "bp-digits-7",
+        "example": "BP2604347",
+        "pattern": "bp\\d{7}",
         "percentage": 0.407,
         "regex": "^bp\\d{7}$"
       },
       {
         "count": 1,
-        "example": "bp142190-192",
-        "pattern": "bp-N6-X1-N3",
-        "percentage": 0.204,
-        "regex": "^bp\\d{6}\\-\\d{3}$"
-      },
-      {
-        "count": 1,
-        "example": "bp1952002679",
-        "pattern": "bp-YYYYN{5-7}",
-        "percentage": 0.204,
-        "regex": "^bp\\d{4}\\d{5,7}$"
-      },
-      {
-        "count": 1,
-        "example": "bp4174",
-        "pattern": "bp-digits-4",
+        "example": "BP4174",
+        "pattern": "bp\\d{4}",
         "percentage": 0.204,
         "regex": "^bp\\d{4}$"
+      },
+      {
+        "count": 1,
+        "example": "BP1952002679",
+        "pattern": "bp\\d{4}\\d{6}",
+        "percentage": 0.204,
+        "regex": "^bp\\d{4}\\d{6}$"
+      },
+      {
+        "count": 1,
+        "example": "BP142190-192",
+        "pattern": "bp\\d{6}\\-\\d{3}",
+        "percentage": 0.204,
+        "regex": "^bp\\d{6}\\-\\d{3}$"
       }
     ],
     "record_count": 491,
-    "unique_doc_types": 38
+    "unique_doc_types": 31
   },
   "forsyth": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 964,
+        "example": {
+          "book": "1489",
+          "page": "222"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 99.793
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 2,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 0.207
+      }
+    ],
     "date_range": {
       "anomalies": [
         "0814-08-08T19:17:15"
@@ -646,8 +896,8 @@
       "DEDICATION": 16,
       "DEED": 306,
       "DEED ACEPT": 22,
-      "DEED OF TRUST": 25,
-      "PLAT": 51,
+      "DEED OF TRUST": 28,
+      "PLAT": 53,
       "REL DEED": 223,
       "RESTR COV": 16,
       "SATISFACTION": 19
@@ -656,44 +906,57 @@
       {
         "count": 959,
         "example": "1985013199",
-        "pattern": "YYYYN{5-7}",
+        "pattern": "\\d{4}\\d{6}",
         "percentage": 99.275,
-        "regex": "^\\d{4}\\d{5,7}$"
+        "regex": "^\\d{4}\\d{6}$"
       },
       {
         "count": 3,
-        "example": "bp34177",
-        "pattern": "bp-digits-5",
+        "example": "BP34177",
+        "pattern": "bp\\d{5}",
         "percentage": 0.311,
         "regex": "^bp\\d{5}$"
       },
       {
         "count": 2,
-        "example": "bp156480",
-        "pattern": "bp-digits-6",
+        "example": "BP156480",
+        "pattern": "bp\\d{6}",
         "percentage": 0.207,
         "regex": "^bp\\d{6}$"
       },
       {
         "count": 1,
-        "example": "bp3311",
-        "pattern": "bp-digits-4",
+        "example": "BP3311",
+        "pattern": "bp\\d{4}",
         "percentage": 0.104,
         "regex": "^bp\\d{4}$"
       },
       {
         "count": 1,
-        "example": "bp1443932",
-        "pattern": "bp-digits-7",
+        "example": "BP1443932",
+        "pattern": "bp\\d{7}",
         "percentage": 0.104,
         "regex": "^bp\\d{7}$"
       }
     ],
     "record_count": 966,
-    "unique_doc_types": 64
+    "unique_doc_types": 61
   },
   "guilford": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 14,
+        "example": {
+          "book": "6004",
+          "page": "329"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 100.0
+      }
+    ],
     "date_range": {
       "anomalies": [],
       "earliest": "1999-07-11",
@@ -702,31 +965,55 @@
     "doc_type_distribution": {
       "DEED": 3,
       "DT": 2,
-      "PLAT": 1,
-      "Plat": 1,
+      "PLAT": 2,
       "R": 7
     },
     "instrument_patterns": [
       {
         "count": 13,
         "example": "2003147307",
-        "pattern": "YYYYN{5-7}",
+        "pattern": "\\d{4}\\d{6}",
         "percentage": 92.857,
-        "regex": "^\\d{4}\\d{5,7}$"
+        "regex": "^\\d{4}\\d{6}$"
       },
       {
         "count": 1,
-        "example": "bp17840",
-        "pattern": "bp-digits-5",
+        "example": "BP17840",
+        "pattern": "bp\\d{5}",
         "percentage": 7.143,
         "regex": "^bp\\d{5}$"
       }
     ],
     "record_count": 14,
-    "unique_doc_types": 5
+    "unique_doc_types": 4
   },
   "johnston": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 2491,
+        "example": {
+          "book": "6236",
+          "page": "916"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 99.92
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 2,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 0.08
+      }
+    ],
     "date_range": {
       "anomalies": [
         "1873-05-06T17:17:15"
@@ -736,10 +1023,10 @@
     },
     "doc_type_distribution": {
       "ASSIGNMENT": 79,
-      "DEED": 532,
-      "DEED OF TRUST": 636,
+      "DEED": 535,
+      "DEED OF TRUST": 639,
       "EASEMENT": 32,
-      "Historical": 41,
+      "HISTORICAL": 41,
       "PARTIAL RELEASE": 85,
       "RELEASE": 96,
       "SATISFACTION": 539,
@@ -750,72 +1037,116 @@
       {
         "count": 2206,
         "example": "2022806081",
-        "pattern": "YYYYN{5-7}",
+        "pattern": "\\d{4}\\d{6}",
         "percentage": 88.488,
-        "regex": "^\\d{4}\\d{5,7}$"
+        "regex": "^\\d{4}\\d{6}$"
       },
       {
-        "count": 270,
+        "count": 248,
         "example": "1692218",
-        "pattern": "digits-7",
-        "percentage": 10.83,
+        "pattern": "\\d{7}",
+        "percentage": 9.948,
+        "regex": "^\\d{7}$"
+      },
+      {
+        "count": 22,
+        "example": "1994558",
+        "pattern": "\\d{7}",
+        "percentage": 0.882,
         "regex": "^\\d{7}$"
       },
       {
         "count": 4,
-        "example": "bp1962317",
-        "pattern": "bp-digits-7",
-        "percentage": 0.16,
-        "regex": "^bp\\d{7}$"
-      },
-      {
-        "count": 4,
         "example": "901612",
-        "pattern": "digits-6",
+        "pattern": "\\d{6}",
         "percentage": 0.16,
         "regex": "^\\d{6}$"
       },
       {
+        "count": 4,
+        "example": "BP1962317",
+        "pattern": "bp\\d{7}",
+        "percentage": 0.16,
+        "regex": "^bp\\d{7}$"
+      },
+      {
         "count": 3,
-        "example": "bp21125",
-        "pattern": "bp-digits-5",
+        "example": "BP21125",
+        "pattern": "bp\\d{5}",
         "percentage": 0.12,
         "regex": "^bp\\d{5}$"
       },
       {
         "count": 2,
         "example": "20200113743E",
-        "pattern": "N11-A1",
+        "pattern": "\\d{11}[A-Za-z]{1}",
         "percentage": 0.08,
         "regex": "^\\d{11}[A-Za-z]{1}$"
       },
       {
         "count": 2,
-        "example": "bp470628",
-        "pattern": "bp-digits-6",
+        "example": "BP470628",
+        "pattern": "bp\\d{6}",
         "percentage": 0.08,
         "regex": "^bp\\d{6}$"
       },
       {
         "count": 1,
-        "example": "bp8984",
-        "pattern": "bp-digits-4",
+        "example": "19426",
+        "pattern": "\\d{5}",
         "percentage": 0.04,
-        "regex": "^bp\\d{4}$"
+        "regex": "^\\d{5}$"
       },
       {
         "count": 1,
-        "example": "19426",
-        "pattern": "digits-5",
+        "example": "BP8984",
+        "pattern": "bp\\d{4}",
         "percentage": 0.04,
-        "regex": "^\\d{5}$"
+        "regex": "^bp\\d{4}$"
       }
     ],
     "record_count": 2493,
-    "unique_doc_types": 41
+    "unique_doc_types": 37
   },
   "mecklenburg": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 2481,
+        "example": {
+          "book": "38254",
+          "page": "450"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 99.639
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 8,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 0.321
+      },
+      {
+        "book_pattern": "mixed",
+        "book_regex": "^[A-Za-z]{4}\\ \\d{3}$",
+        "count": 1,
+        "example": {
+          "book": "SATS 954",
+          "page": "190"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 0.04
+      }
+    ],
     "date_range": {
       "anomalies": [],
       "earliest": "1972-04-05",
@@ -824,113 +1155,138 @@
     "doc_type_distribution": {
       "CAN": 71,
       "COMMISSIONERS DEED": 101,
-      "DEED": 437,
-      "DEED OF TRUST": 397,
+      "DEED": 443,
+      "DEED OF TRUST": 422,
       "FORECLOSURE": 94,
       "MAP": 250,
       "MAP/R": 205,
+      "RESTRICTIONS": 86,
       "SATISFACTION - CERTIFICATE OF": 119,
-      "SUBSTITUTION TRUSTEE": 74,
-      "TRUSTEES DEED": 62
+      "SUBSTITUTION TRUSTEE": 74
     },
     "instrument_patterns": [
       {
         "count": 2224,
         "example": "2023067542",
-        "pattern": "YYYYN{5-7}",
+        "pattern": "\\d{4}\\d{6}",
         "percentage": 89.317,
-        "regex": "^\\d{4}\\d{5,7}$"
+        "regex": "^\\d{4}\\d{6}$"
       },
       {
         "count": 177,
         "example": "96140024",
-        "pattern": "digits-8",
+        "pattern": "\\d{8}",
         "percentage": 7.108,
         "regex": "^\\d{8}$"
       },
       {
         "count": 30,
-        "example": "bp19923785",
-        "pattern": "bp-digits-8",
+        "example": "BP19923785",
+        "pattern": "bp\\d{8}",
         "percentage": 1.205,
         "regex": "^bp\\d{8}$"
       },
       {
         "count": 23,
-        "example": "bp8309199",
-        "pattern": "bp-digits-7",
+        "example": "BP8309199",
+        "pattern": "bp\\d{7}",
         "percentage": 0.924,
         "regex": "^bp\\d{7}$"
       },
       {
         "count": 13,
-        "example": "bp71231",
-        "pattern": "bp-digits-5",
+        "example": "BP71231",
+        "pattern": "bp\\d{5}",
         "percentage": 0.522,
         "regex": "^bp\\d{5}$"
       },
       {
         "count": 9,
-        "example": "bp099340881",
-        "pattern": "bp-YYYYN{5-7}",
+        "example": "BP099340881",
+        "pattern": "bp\\d{4}\\d{5}",
         "percentage": 0.361,
-        "regex": "^bp\\d{4}\\d{5,7}$"
+        "regex": "^bp\\d{4}\\d{5}$"
       },
       {
         "count": 5,
-        "example": "bp282992",
-        "pattern": "bp-digits-6",
+        "example": "BP282992",
+        "pattern": "bp\\d{6}",
         "percentage": 0.201,
         "regex": "^bp\\d{6}$"
       },
       {
         "count": 4,
-        "example": "bp2321",
-        "pattern": "bp-digits-4",
+        "example": "BP2321",
+        "pattern": "bp\\d{4}",
         "percentage": 0.161,
         "regex": "^bp\\d{4}$"
       },
       {
         "count": 1,
         "example": "RD98-598",
-        "pattern": "A2-N2-X1-N3",
+        "pattern": "[A-Za-z]{2}\\d{2}\\-\\d{3}",
         "percentage": 0.04,
         "regex": "^[A-Za-z]{2}\\d{2}\\-\\d{3}$"
       },
       {
         "count": 1,
         "example": "20200074287C",
-        "pattern": "N11-A1",
+        "pattern": "\\d{11}[A-Za-z]{1}",
         "percentage": 0.04,
         "regex": "^\\d{11}[A-Za-z]{1}$"
       },
       {
         "count": 1,
-        "example": "bp333",
-        "pattern": "bp-digits-3",
-        "percentage": 0.04,
-        "regex": "^bp\\d{3}$"
-      },
-      {
-        "count": 1,
         "example": "017290",
-        "pattern": "digits-6",
+        "pattern": "\\d{6}",
         "percentage": 0.04,
         "regex": "^\\d{6}$"
       },
       {
         "count": 1,
         "example": "2003199",
-        "pattern": "digits-7",
+        "pattern": "\\d{7}",
         "percentage": 0.04,
         "regex": "^\\d{7}$"
+      },
+      {
+        "count": 1,
+        "example": "BP333",
+        "pattern": "bp\\d{3}",
+        "percentage": 0.04,
+        "regex": "^bp\\d{3}$"
       }
     ],
     "record_count": 2490,
-    "unique_doc_types": 115
+    "unique_doc_types": 105
   },
   "onslow": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 1676,
+        "example": {
+          "book": "5399",
+          "page": "793"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 99.94
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 1,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 0.06
+      }
+    ],
     "date_range": {
       "anomalies": [],
       "earliest": "1976-04-16",
@@ -940,77 +1296,102 @@
       "AFFIDAVIT": 20,
       "ASSIGNMENT": 32,
       "CANCELLATION": 114,
-      "DEED": 648,
-      "DEED OF TRUST": 252,
-      "Deed of Trust": 26,
+      "DEED": 649,
+      "DEED OF TRUST": 278,
       "MAP": 27,
       "MISCELLANEOUS": 75,
-      "RELEASE": 312,
+      "POWER OF ATTORNEY": 20,
+      "RELEASE": 315,
       "RESTRICTIVE COVENANT": 19
     },
     "instrument_patterns": [
       {
         "count": 1445,
-        "example": "bp5399793",
-        "pattern": "bp-digits-7",
+        "example": "BP5399793",
+        "pattern": "bp\\d{7}",
         "percentage": 86.166,
         "regex": "^bp\\d{7}$"
       },
       {
         "count": 142,
-        "example": "bp345952",
-        "pattern": "bp-digits-6",
+        "example": "BP345952",
+        "pattern": "bp\\d{6}",
         "percentage": 8.468,
         "regex": "^bp\\d{6}$"
       },
       {
         "count": 49,
-        "example": "bp55798",
-        "pattern": "bp-digits-5",
+        "example": "BP55798",
+        "pattern": "bp\\d{5}",
         "percentage": 2.922,
         "regex": "^bp\\d{5}$"
       },
       {
         "count": 19,
-        "example": "bp4640",
-        "pattern": "bp-digits-4",
-        "percentage": 1.133,
-        "regex": "^bp\\d{4}$"
-      },
-      {
-        "count": 19,
         "example": "008722570019",
-        "pattern": "digits-12",
+        "pattern": "\\d{12}",
         "percentage": 1.133,
         "regex": "^\\d{12}$"
       },
       {
+        "count": 19,
+        "example": "BP4640",
+        "pattern": "bp\\d{4}",
+        "percentage": 1.133,
+        "regex": "^bp\\d{4}$"
+      },
+      {
         "count": 2,
-        "example": "bp656",
-        "pattern": "bp-digits-3",
+        "example": "BP656",
+        "pattern": "bp\\d{3}",
         "percentage": 0.119,
         "regex": "^bp\\d{3}$"
       },
       {
         "count": 1,
         "example": "070529-59459A",
-        "pattern": "N6-X1-N5-A1",
+        "pattern": "\\d{6}\\-\\d{5}[A-Za-z]{1}",
         "percentage": 0.06,
         "regex": "^\\d{6}\\-\\d{5}[A-Za-z]{1}$"
       }
     ],
     "record_count": 1677,
-    "unique_doc_types": 49
+    "unique_doc_types": 43
   },
   "union": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 151,
+        "example": {
+          "book": "1509",
+          "page": "452"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 99.342
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 1,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 0.658
+      }
+    ],
     "date_range": {
       "anomalies": [],
       "earliest": "1975-07-22",
       "latest": "2018-10-11"
     },
     "doc_type_distribution": {
-      "Agreement": 1,
+      "AGREEMENT": 1,
       "DEED": 148,
       "QCD": 3
     },
@@ -1018,14 +1399,14 @@
       {
         "count": 151,
         "example": "2001-42520",
-        "pattern": "YYYY-N{5-7}",
+        "pattern": "\\d{4}-\\d{5}",
         "percentage": 99.342,
-        "regex": "^\\d{4}-\\d{5,7}$"
+        "regex": "^\\d{4}-\\d{5}$"
       },
       {
         "count": 1,
-        "example": "bp8765541",
-        "pattern": "bp-digits-7",
+        "example": "BP8765541",
+        "pattern": "bp\\d{7}",
         "percentage": 0.658,
         "regex": "^bp\\d{7}$"
       }
@@ -1034,7 +1415,68 @@
     "unique_doc_types": 3
   },
   "wake": {
-    "book_patterns": [],
+    "book_patterns": [
+      {
+        "book_pattern": "digits_only",
+        "book_regex": "^\\d+$",
+        "count": 2313,
+        "example": {
+          "book": "10905",
+          "page": "2162"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 93.53
+      },
+      {
+        "book_pattern": "alnum",
+        "book_regex": "^[A-Za-z0-9]+$",
+        "count": 149,
+        "example": {
+          "book": "BM2001",
+          "page": "2017"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 6.025
+      },
+      {
+        "book_pattern": "missing",
+        "book_regex": "^$",
+        "count": 9,
+        "example": {
+          "book": null,
+          "page": null
+        },
+        "page_pattern": "missing",
+        "page_regex": "^$",
+        "percentage": 0.364
+      },
+      {
+        "book_pattern": "alnum",
+        "book_regex": "^[A-Za-z0-9]+$",
+        "count": 1,
+        "example": {
+          "book": "GR1987",
+          "page": "2A"
+        },
+        "page_pattern": "alnum",
+        "page_regex": "^[A-Za-z0-9]+$",
+        "percentage": 0.04
+      },
+      {
+        "book_pattern": "mixed",
+        "book_regex": "^\\d{4}\\ [A-Za-z]{3}\\.\\d{1}$",
+        "count": 1,
+        "example": {
+          "book": "1972 Vol.1",
+          "page": "86"
+        },
+        "page_pattern": "digits_only",
+        "page_regex": "^\\d+$",
+        "percentage": 0.04
+      }
+    ],
     "date_range": {
       "anomalies": [
         "2098-09-05T20:00:00",
@@ -1048,151 +1490,165 @@
     "doc_type_distribution": {
       "CANCELLATION": 89,
       "CERTIFICATE OF SATISFACTION": 68,
-      "DEED": 940,
-      "DEED OF TRUST": 394,
+      "DEED": 943,
+      "DEED OF TRUST": 402,
       "MAP PLAT": 124,
       "PARTIAL RELEASE": 91,
-      "POWER OF ATTORNEY": 40,
+      "POWER OF ATTORNEY": 41,
       "RELEASE": 143,
       "REQUEST NOTICE": 42,
-      "SATISFACTION": 148
+      "SATISFACTION": 151
     },
     "instrument_patterns": [
       {
         "count": 2211,
         "example": "010905-02162",
-        "pattern": "N6-X1-N5",
+        "pattern": "\\d{6}\\-\\d{5}",
         "percentage": 89.406,
         "regex": "^\\d{6}\\-\\d{5}$"
       },
       {
         "count": 124,
         "example": "BM2001-02017",
-        "pattern": "A2-N4-X1-N5",
+        "pattern": "[A-Za-z]{2}\\d{4}\\-\\d{5}",
         "percentage": 5.014,
         "regex": "^[A-Za-z]{2}\\d{4}\\-\\d{5}$"
       },
       {
-        "count": 68,
+        "count": 67,
         "example": "2025010010",
-        "pattern": "YYYYN{5-7}",
-        "percentage": 2.75,
-        "regex": "^\\d{4}\\d{5,7}$"
+        "pattern": "\\d{4}\\d{6}",
+        "percentage": 2.709,
+        "regex": "^\\d{4}\\d{6}$"
       },
       {
         "count": 19,
         "example": "00X931-02248",
-        "pattern": "N2-A1-N3-X1-N5",
+        "pattern": "\\d{2}[A-Za-z]{1}\\d{3}\\-\\d{5}",
         "percentage": 0.768,
         "regex": "^\\d{2}[A-Za-z]{1}\\d{3}\\-\\d{5}$"
       },
       {
-        "count": 19,
-        "example": "bp01916501155",
-        "pattern": "bp-YYYYN{5-7}",
-        "percentage": 0.768,
-        "regex": "^bp\\d{4}\\d{5,7}$"
+        "count": 17,
+        "example": "BP01916501155",
+        "pattern": "bp\\d{4}\\d{7}",
+        "percentage": 0.687,
+        "regex": "^bp\\d{4}\\d{7}$"
       },
       {
         "count": 9,
-        "example": "bp2002808",
-        "pattern": "bp-digits-7",
+        "example": "BP2002808",
+        "pattern": "bp\\d{7}",
         "percentage": 0.364,
         "regex": "^bp\\d{7}$"
       },
       {
         "count": 4,
-        "example": "bp43840262",
-        "pattern": "bp-digits-8",
+        "example": "BP43840262",
+        "pattern": "bp\\d{8}",
         "percentage": 0.162,
         "regex": "^bp\\d{8}$"
       },
       {
         "count": 3,
         "example": "BK018798PG02063",
-        "pattern": "A2-N6-A2-N5",
+        "pattern": "[A-Za-z]{2}\\d{6}[A-Za-z]{2}\\d{5}",
         "percentage": 0.121,
         "regex": "^[A-Za-z]{2}\\d{6}[A-Za-z]{2}\\d{5}$"
       },
       {
         "count": 3,
-        "example": "bp195195",
-        "pattern": "bp-digits-6",
+        "example": "BP195195",
+        "pattern": "bp\\d{6}",
         "percentage": 0.121,
         "regex": "^bp\\d{6}$"
       },
       {
         "count": 2,
         "example": "BKBM2019PG01880",
-        "pattern": "A4-N4-A2-N5",
+        "pattern": "[A-Za-z]{4}\\d{4}[A-Za-z]{2}\\d{5}",
         "percentage": 0.081,
         "regex": "^[A-Za-z]{4}\\d{4}[A-Za-z]{2}\\d{5}$"
       },
       {
         "count": 2,
         "example": "20240091879C",
-        "pattern": "N11-A1",
+        "pattern": "\\d{11}[A-Za-z]{1}",
         "percentage": 0.081,
         "regex": "^\\d{11}[A-Za-z]{1}$"
       },
       {
         "count": 2,
-        "example": "bpBM19851938",
-        "pattern": "bp-A2-N8",
+        "example": "BPBM19851938",
+        "pattern": "bp[A-Za-z]{2}\\d{8}",
         "percentage": 0.081,
         "regex": "^bp[A-Za-z]{2}\\d{8}$"
       },
       {
+        "count": 2,
+        "example": "BP195751043",
+        "pattern": "bp\\d{4}\\d{5}",
+        "percentage": 0.081,
+        "regex": "^bp\\d{4}\\d{5}$"
+      },
+      {
         "count": 1,
         "example": "GR1987-0002A",
-        "pattern": "A2-N4-X1-N4-A1",
+        "pattern": "[A-Za-z]{2}\\d{4}\\-\\d{4}[A-Za-z]{1}",
         "percentage": 0.04,
         "regex": "^[A-Za-z]{2}\\d{4}\\-\\d{4}[A-Za-z]{1}$"
       },
       {
         "count": 1,
         "example": "1972PG00086",
-        "pattern": "N4-A2-N5",
+        "pattern": "\\d{4}[A-Za-z]{2}\\d{5}",
         "percentage": 0.04,
         "regex": "^\\d{4}[A-Za-z]{2}\\d{5}$"
       },
       {
         "count": 1,
-        "example": "bpBM199825",
-        "pattern": "bp-A2-N6",
+        "example": "0221002215",
+        "pattern": "\\d{4}\\d{6}",
         "percentage": 0.04,
-        "regex": "^bp[A-Za-z]{2}\\d{6}$"
-      },
-      {
-        "count": 1,
-        "example": "bpBM202101482",
-        "pattern": "bp-A2-N9",
-        "percentage": 0.04,
-        "regex": "^bp[A-Za-z]{2}\\d{9}$"
-      },
-      {
-        "count": 1,
-        "example": "bpCORP11346",
-        "pattern": "bp-A4-N5",
-        "percentage": 0.04,
-        "regex": "^bp[A-Za-z]{4}\\d{5}$"
+        "regex": "^\\d{4}\\d{6}$"
       },
       {
         "count": 1,
         "example": "3095421",
-        "pattern": "digits-7",
+        "pattern": "\\d{7}",
         "percentage": 0.04,
         "regex": "^\\d{7}$"
       },
       {
         "count": 1,
         "example": "68979544",
-        "pattern": "digits-8",
+        "pattern": "\\d{8}",
         "percentage": 0.04,
         "regex": "^\\d{8}$"
+      },
+      {
+        "count": 1,
+        "example": "BPBM199825",
+        "pattern": "bp[A-Za-z]{2}\\d{6}",
+        "percentage": 0.04,
+        "regex": "^bp[A-Za-z]{2}\\d{6}$"
+      },
+      {
+        "count": 1,
+        "example": "BPBM202101482",
+        "pattern": "bp[A-Za-z]{2}\\d{9}",
+        "percentage": 0.04,
+        "regex": "^bp[A-Za-z]{2}\\d{9}$"
+      },
+      {
+        "count": 1,
+        "example": "BPCORP11346",
+        "pattern": "bp[A-Za-z]{4}\\d{5}",
+        "percentage": 0.04,
+        "regex": "^bp[A-Za-z]{4}\\d{5}$"
       }
     ],
     "record_count": 2473,
-    "unique_doc_types": 71
+    "unique_doc_types": 62
   }
 }
