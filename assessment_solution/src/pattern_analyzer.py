@@ -16,10 +16,18 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, DefaultDict, Iterable
 
-from assessment_solution.src.utils import infer_instrument_pattern
+from assessment_solution.src.utils import (
+    DEFAULT_INPUT_JSONL,
+    OUTPUT_FOLDER,
+    infer_instrument_pattern,
+    normalize_doc_type,
+    safe_parse_date,
+)
 
 LOGGER = logging.getLogger(__name__)
 DATE_LOWER_BOUND = datetime(1900, 1, 1)
+
+DEFAULT_OUTPUT_COUNTY_PATTERNS = OUTPUT_FOLDER.joinpath("county_patterns.json")
 
 
 @dataclass
@@ -65,10 +73,9 @@ class DocTypeStats:
     cross_tab: DefaultDict[str, Counter[str]] = field(default_factory=lambda: defaultdict(Counter))
 
     def add(self, doc_type: str, doc_category: str) -> None:
-        sanitized_type = (doc_type or "").strip() or "UNKNOWN"
-        sanitized_category = (doc_category or "").strip() or "unknown"
-        self.counts[sanitized_type] += 1
-        self.cross_tab[sanitized_type][sanitized_category] += 1
+        sanitized_category = (doc_category or "UNKNOWN").strip()
+        self.counts[doc_type] += 1
+        self.cross_tab[doc_type][sanitized_category] += 1
 
 
 @dataclass
@@ -165,9 +172,8 @@ def update_dates(date_range: DateRange, now: datetime, raw_date: str = None) -> 
 
     if not raw_date:
         return
-    try:
-        parsed = datetime.fromisoformat(raw_date)
-    except ValueError:
+    parsed = safe_parse_date(raw_date)
+    if parsed is None:
         date_range.anomalies.append(f"parse_error:{raw_date}")
         return
 
@@ -187,7 +193,8 @@ def update_doc_types(
 ) -> None:
     """Track doc_type and cross-tab information."""
 
-    doc_stats.add(doc_type or "", doc_category or "")
+    normalized_doc_type = normalize_doc_type(doc_type)
+    doc_stats.add(normalized_doc_type, doc_category or "")
 
 
 # Ingestion and post-processing --------------------------------------------- #
@@ -276,13 +283,13 @@ def parse_args(argv: Iterable[str] = None) -> argparse.Namespace:
     parser.add_argument(
         "--input",
         type=Path,
-        default=Path("data/nc_records_assessment.jsonl"),
+        default=DEFAULT_INPUT_JSONL,
         help="Path to JSONL file with county records.",
     )
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("assessment_solution/outputs/county_patterns.json"),
+        default=DEFAULT_OUTPUT_COUNTY_PATTERNS,
         help="Path to write summarized JSON output.",
     )
     parser.add_argument(
@@ -346,6 +353,10 @@ def main(argv: Iterable[str] = None) -> None:
 
     args = parse_args(argv)
     setup_logging()
+    if not args.input.exists():
+        LOGGER.error("Input file not found: %s", args.input)
+        raise SystemExit(1)
+
     county_stats = stream_file(args.input, args.log_interval)
     output_content = build_output(county_stats)
     write_output(args.output, output_content)

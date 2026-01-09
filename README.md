@@ -3,15 +3,16 @@
 ## Setup
 - Python >= 3.9
 - Install tooling: `pip install -r assessment_solution/requirements.txt`
+- Add `.env` with `OPENAI_API_KEY=<your_key>` for Task 2.
 
 ## How to run scripts
 - Task 1 (county patterns): `python -m assessment_solution.src.pattern_analyzer --input data/nc_records_assessment.jsonl --output assessment_solution/outputs/county_patterns.json --log-interval 1000`
-- Task 2 (doc_type classification): `python -m assessment_solution.src.llm_classifier --input data/nc_records_assessment.jsonl --output assessment_solution/outputs/doc_type_mapping.json` _(status: to be implemented; see approach below)_
+- Task 2 (doc_type classification): `python -m assessment_solution.src.llm_classifier --input data/nc_records_assessment.jsonl --output assessment_solution/outputs/doc_type_mapping.json`
 - Bonus (connections/PDF/story): `python -m assessment_solution.src.connection_finder`, `python -m assessment_solution.src.pdf_analyzer`, `python -m assessment_solution.src.story_generator` _(status: planned; see bonus plan)_
 - Style checks: `ruff check assessment_solution` and `black --check assessment_solution`; combined helper (once added): `bash assessment_solution/scripts/check_style.sh`
 
 ## Dependencies and requirements
-- Runtime: standard library only (argparse, json, logging, datetime, pathlib, dataclasses, collections, re).
+- Runtime: standard library plus `openai` and `python-dotenv` (for OpenAI access and `.env` loading).
 - Dev tooling: `black==24.10.0`, `ruff==0.6.7` (pinned in `assessment_solution/requirements.txt`).
 
 ## Task 1 (county pattern analysis)
@@ -19,22 +20,41 @@
 - Logging-based progress every N records (configurable).
 
 ## Task 2 (LLM-assisted classification) – approach, prompts, validation, cost, trade-offs
-- Approach: normalize doc_type strings (strip/uppercase/collapse spaces), take top ~200 frequent + ~50 long-tail examples, dedupe, and batch 20 items per LLM call. Allowed categories: `SALE_DEED`, `MORTGAGE`, `DEED_OF_TRUST`, `RELEASE`, `LIEN`, `PLAT`, `EASEMENT`, `LEASE`, `MISC`. Apply returned mapping locally to full JSONL (no per-record LLM calls).
-- Prompt used (sample):
-  - System: “You map noisy county recording doc_type strings to one of the allowed categories. Respond with JSON only.”
-  - User: provides allowed categories list and JSON array of doc_type candidates; few-shot examples like `{"QUIT CLAIM DEED": "SALE_DEED", "DEED OF TRUST": "DEED_OF_TRUST", "SUBORDINATION OF LIEN": "LIEN"}`; request strict JSON mapping `{ "raw_doc_type": "STANDARD_CATEGORY" }` and “return ONLY valid JSON.”
-- Validation methodology:
-  - Parse JSON; reject and retry on errors.
-  - Enforce outputs in allowed category set; rerun invalid entries.
-  - Frequency-weighted spot checks (top 20) plus random rare samples; inspect mismatches and, if needed, patch mapping manually before applying.
-  - Final mapping applied deterministically across the dataset; outputs stored in `assessment_solution/outputs/doc_type_mapping.json`.
-- Cost breakdown (estimate):
-  - ~250 doc_type strings, batched 20 per call ⇒ ~13 calls.
-  - Per call ~300 input + ~200 output tokens ⇒ ~6.5k input + ~4.3k output total.
-  - Using a cheap model (e.g., gpt-4o-mini pricing scale), estimated cost ≈ $0.05–$0.15 end-to-end.
+- Approach: stream once, normalize doc_type strings (strip/uppercase/collapse spaces, underscores→spaces), count frequencies, and classify unique values only (cuts LLM volume ~99%). Sample by descending frequency until ~95–98% record coverage, then add key abbreviations/rare semantic types (MTG, DOT, REL, LIEN, PLAT, EASEMENT). Non-sampled values default to `MISC`.
+- Prompt (batch of up to 20 doc_types):  
+  ```
+  You are classifying real estate document types.
+  
+  Map each input document type to exactly ONE of the following categories:
+  - SALE_DEED
+  - MORTGAGE
+  - DEED_OF_TRUST
+  - RELEASE
+  - LIEN
+  - PLAT
+  - EASEMENT
+  - LEASE
+  - MISC
+  
+  Rules:
+  - Be conservative.
+  - If unsure, choose MISC.
+  - Return valid JSON only.
+  - Do not include explanations.
+  
+  Input:
+  [list of document type strings]
+  ```
+- Validation:
+  - Parse JSON; enforce allowed category set; fallback to `MISC` on invalid/missing entries.
+  - Log coverage achieved, LLM call count, and token-cost snapshot.
+  - Manual spot-check recommended on top 20 frequent + a few rare values.
+- Cost breakdown (estimate, OpenAI `gpt-4o-mini` pricing [link](https://openai.com/api/pricing)):
+  - ~300 unique doc_types → ~15 calls at batch 20.
+  - Token roughness: ~6k input + ~3.6k output → est. cost ≈ `$6k*0.15/1M + 3.6k*0.60/1M` ≈ $0.0031.
 - Trade-offs:
-  - Cheap model reduces cost/latency but may miss nuanced types; mitigated with few-shot examples, normalization, and validation checks.
-  - Batching improves throughput but risks context bleed; keep batches small (≤20) and include explicit allowed-category reminder each call.
+  - Sampling to high coverage keeps cost minimal; rare tails default to `MISC`.
+  - Small batches reduce prompt bleed; conservative instructions bias toward `MISC` when uncertain.
 
 ## Bonus task plan (connections, PDFs, storytelling)
 - Prompts (planned): concise JSON-only extraction prompts for PDF-derived snippets (parties, dates, amounts, addresses), followed by a summarization prompt to explain connections across 2–4 documents per group.
