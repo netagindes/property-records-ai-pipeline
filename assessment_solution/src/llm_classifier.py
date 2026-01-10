@@ -59,14 +59,19 @@ COMMON_OFFENDERS = [
     "NOTICE",
     "AMENDMENT",
     "AMEND",
+    "COVENANT",
+    "COVENANTS",
+    "RESTRICTIVE",
+    "RESTRICTIVE COVENANT",
+    "RESTRICTIVE COVENANTS",
 ]
 
 
 DEFAULT_MODEL = "gpt-4o-mini"  # TODO
 COVERAGE_TARGET = 0.98
-BATCH_SIZE = 16  # TODO: 20
-TEMPERATURE = 0.2
-TOP_P = 0.95
+BATCH_SIZE = 15  # TODO: 20
+TEMPERATURE = 0.1  # lower temperature to reduce raw echo drift
+TOP_P = 0.90
 STOP_SEQUENCES: list[str] = []
 
 
@@ -178,13 +183,24 @@ def sample_doc_types(
 SYSTEM_PROMPT = """
 You are a classifier specialized in North Carolina property records document types.
 
-Map each input document type to exactly ONE of the following categories: 
+Allowed categories (choose exactly ONE per input):
 {categories}
 
-Task Requirements:
-1) Return **only one label**.
-2) If the text strongly matches multiple labels, choose the best fitting one.
-3) Ensure your answer covers all possible label meanings (i.e., consider the full label set)
+Category guidance (choose best fit, never echo the input):
+- SALE_DEED: deeds, bargain & sale, quitclaim, warranty, trustee or sheriff deeds.
+- MORTGAGE: mortgages labeled MTG or MTGE.
+- DEED_OF_TRUST: deeds of trust, DOT, assignments/mods/subordinations of DOT, foreclosure notices.
+- RELEASE: satisfactions, cancellations, partial releases, reconveyance.
+- LIEN: UCC filings, liens (tax/mechanic/JT), claims of lien.
+- PLAT: plats, maps, re-plats, condo maps, surveys, dedications.
+- EASEMENT: easements, right-of-way.
+- LEASE: leases or memoranda of lease.
+- MISC: everything else (covenants/restrictions/HOA docs, affidavits, generic “notice”/“amendment”, ambiguous strings).
+
+Rules:
+1) Return exactly one category string per item; never output raw doc_type text.
+2) If multiple categories seem plausible, pick the single best fit using the guidance.
+3) If unsure, choose MISC.
 
 Example:
 {example}
@@ -195,7 +211,35 @@ def build_system_prompt(categories: list[str] = ALLOWED_CATEGORIES) -> str:
     """Render the classification system prompt for a batch of doc type strings."""
 
     categories_str = "\n".join([f"- {category}" for category in categories])
-    example = json.dumps({"DEED": "SALE_DEED", "MTG": "MORTGAGE"})  # TODO
+    example = json.dumps(
+        {
+            "DOT": "DEED_OF_TRUST",
+            # "SUBORDINATION": "DEED_OF_TRUST",
+            "SUBSTITUTE TRUSTEE": "DEED_OF_TRUST",
+            "FORECLOSURE NOTICE": "DEED_OF_TRUST",
+            "FC": "DEED_OF_TRUST",
+            "AFDVT": "DEED_OF_TRUST",
+            "ASGMT": "DEED_OF_TRUST",
+            "C-SAT": "RELEASE",
+            "REL": "RELEASE",
+            "DEDICATION": "PLAT",
+            "JUDGMENT": "LIEN",
+            "UCC": "LIEN",
+            "UCC FINANCING STATEMENT AMENDMENT": "LIEN",
+            "REST": "RELEASE",
+            "Q C D": "SALE_DEED",
+            "D & REL": "SALE_DEED", 
+            "SUB D": "SALE_DEED",
+            "CORR D": "SALE_DEED",
+            # "DEED": "SALE_DEED",
+            # "TRUSTEES DEED": "SALE_DEED",
+            "SUBSTITUTE TRUSTEE'S DEED": "SALE_DEED",
+            "REL D": "SALE_DEED",
+            "COVENANT/RESTRICTIVE COVENANTS": "MISC",
+            # "AMENDMENT": "MISC",
+            # "NOTICE": "MISC",
+        }
+    )  # TODO: refine illustrative examples as needed
 
     return SYSTEM_PROMPT.format(categories=categories_str, example=example)
 
@@ -207,7 +251,8 @@ Rules:
 - Be conservative.
 - Return valid JSON only.
 - Return only one label for each input.
-- Do not include explanations.
+- Do NOT echo the input text or invent new labels.
+- No explanations.
 
 Input:
 {payload}
@@ -217,24 +262,8 @@ Output a single JSON object where:
 - Each value is one of the categories above.
 - Do not add or remove keys. Do not return arrays. No explanations.
 """
-
-COMMON_OFFENDERS = [
-    "DEED",
-    "DEEDS",
-    "SATISFACTION",
-    "SATISF",
-    "SAT",
-    "ASSIGNMENT",
-    "ASSIGN",
-    "UCC",
-    "CANCELLATION",
-    "CANCEL",
-    "NOTICE",
-    "AMENDMENT",
-    "AMEND",
-]
-BOOST = 4.0
-PENALTY = -5.0
+BOOST = 8.0  # stronger bias toward allowed labels
+PENALTY = -6.0  # slightly softer penalty to reduce clashes with sub-tokens
 
 
 def build_logit_bias(
