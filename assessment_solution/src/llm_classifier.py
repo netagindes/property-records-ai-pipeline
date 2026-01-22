@@ -33,37 +33,106 @@ from assessment_solution.src.utils import (
 LOGGER = logging.getLogger(__name__)
 DEFAULT_OUTPUT_DOC_TYPE_MAPPING = OUTPUT_FOLDER.joinpath("doc_type_mapping.json")
 
-ALLOWED_CATEGORIES = [
-    "SALE_DEED",
-    "MORTGAGE",
-    "DEED_OF_TRUST",
-    "RELEASE",
-    "LIEN",
-    "PLAT",
-    "EASEMENT",
-    "LEASE",
-    "MISC",
-]
+ALLOWED_CATEGORIES = {
+    "SALE_DEED": "deeds, bargain/sale, quitclaim, warranty, trustee or sheriff deeds (not DOT).",
+    "MORTGAGE": "mortgages labeled MTG/MTGE; not deeds of trust.",
+    "DEED_OF_TRUST":
+        "deeds of trust; assignments/mods/subordinations of DOT; foreclosure or substitute-trustee filings.",
+    "RELEASE": "satisfactions, cancellations, partial releases, reconveyance/discharge.",
+    "LIEN": "UCC filings and amendments; tax/mechanic/judgment liens; claims of lien.",
+    "PLAT": "plats/maps/surveys, condo maps, dedications and re-plats.",
+    "EASEMENT": "easements, right-of-way/ROW agreements.",
+    "LEASE": "leases or memoranda of lease.",
+    "MISC": "covenants/restrictions/HOA docs, affidavits, generic notice/amendment, ambiguous strings.",
+}  # TODO: refine illustrative examples as needed
 
 COMMON_OFFENDERS = [
+    # --------------------------------------------------
+    # Deed attractors (high-frequency, over-generalized)
+    # --------------------------------------------------
     "DEED",
     "DEEDS",
-    "SATISFACTION",
-    "SATISF",
+    "D E E D",
+
+    # --------------------------------------------------
+    # Satisfaction / release collapse
+    # --------------------------------------------------
     "SAT",
-    "ASSIGNMENT",
+    "SATISF",
+    "SATISFACTION",
+    "RELEASE",
+    "REL",
+    "RECON",
+    "RECONVEYANCE",
+
+    # --------------------------------------------------
+    # Assignment ambiguity
+    # --------------------------------------------------
     "ASSIGN",
+    "ASIGN",
+    "ASSIGNMENT",
+    "ASGMT",
+
+    # --------------------------------------------------
+    # Mortgage / DOT generic gravity
+    # --------------------------------------------------
+    "TRUST",
+    "TRUSTEE",
+    "TRUSTEES",
+    "DOT",
+    "D/T",
+    "DEED OF TRUST",
+    "MORTGAGE",
+
+    # --------------------------------------------------
+    # Legal / court noise
+    # --------------------------------------------------
+    "JUDGMENT",
+    "LIEN",
+    "LIS PENDENS",
+    "FORECLOSURE",
+    "FC",
+
+    # --------------------------------------------------
+    # UCC noise
+    # --------------------------------------------------
     "UCC",
-    "CANCELLATION",
-    "CANCEL",
-    "NOTICE",
-    "AMENDMENT",
+    "UCC AMENDMENT",
+    "UCC FINANCING",
+
+    # --------------------------------------------------
+    # Amendment / cancellation traps
+    # --------------------------------------------------
     "AMEND",
+    "AMENDED",
+    "AMENDMENT",
+    "RESTATED",
+    "AMENDED AND RESTATED",
+    "CANCEL",
+    "CANCELLATION",
+
+    # --------------------------------------------------
+    # Notice gravity (often meaningless alone)
+    # --------------------------------------------------
+    "NOTICE",
+    "NOTICES",
+    "NOTICE OF",
+
+    # --------------------------------------------------
+    # Covenant / HOA collapse
+    # --------------------------------------------------
+    "CONVY"
     "COVENANT",
     "COVENANTS",
     "RESTRICTIVE",
     "RESTRICTIVE COVENANT",
     "RESTRICTIVE COVENANTS",
+    "DECLARATION",
+    "DECLARATIONS",
+    "CONDO",
+    "CONDOMINIUM",
+    "HOA",
+
 ]
 
 
@@ -180,68 +249,101 @@ def sample_doc_types(
     return selected
 
 
+# TODO: 
+# Rule:
+# DEED beats everything.
+# TRUST beats LIEN.
+# UCC always LIEN.
+# SAT/CANCEL always RELEASE.
+# COVENANTS always MISC.
+# Guidelines:
+# 1) IF doc_type contains "DEED" OR "D" → SALE_DEED
+#    EXCEPT when it explicitly says "DEED OF TRUST"
+#    EXCEPT when doc_type contains "ESMT" OR "EASEMENT"
+#    EXCEPT when doc_type contains "PRE" → "MISC"
+# 2) IF doc_type contains "TRUST" → DEED_OF_TRUST
+#    EXCEPT when doc_type contains "TRUSTEE" AND "DEED" → SALE_DEED
+# 3) IF doc_type contains "MORTGAGE" AND NOT "TRUST" → MORTGAGE
+# 4) IF doc_type contains "UCC" OR "FINANCING STATEMENT" → LIEN
+#    IF doc_type contains "JUDGMENT" → LIEN
+# 5) IF doc_type contains "SAT" OR "CANCEL" OR "RELEASE" → RELEASE
+#    EXCEPT when doc_type contains "DEED" → SALE_DEED
+# 6) IF doc_type contains "PLAT" OR "MAP" OR "DEDICATION" → PLAT
+# 7) IF doc_type contains "COVENANT" OR "CC&R" OR "CONDO" → MISC
+# 8) IF doc_type is ambiguous or generic → MISC
 SYSTEM_PROMPT = """
 You are a classifier specialized in North Carolina property records document types.
 
 Allowed categories (choose exactly ONE per input):
 {categories}
 
-Category guidance (choose best fit, never echo the input):
-- SALE_DEED: deeds, bargain & sale, quitclaim, warranty, trustee or sheriff deeds.
-- MORTGAGE: mortgages labeled MTG or MTGE.
-- DEED_OF_TRUST: deeds of trust, DOT, assignments/mods/subordinations of DOT, foreclosure notices.
-- RELEASE: satisfactions, cancellations, partial releases, reconveyance.
-- LIEN: UCC filings, liens (tax/mechanic/JT), claims of lien.
-- PLAT: plats, maps, re-plats, condo maps, surveys, dedications.
-- EASEMENT: easements, right-of-way.
-- LEASE: leases or memoranda of lease.
-- MISC: everything else (covenants/restrictions/HOA docs, affidavits, generic “notice”/“amendment”, ambiguous strings).
-
-Rules:
-1) Return exactly one category string per item; never output raw doc_type text.
+Task Requirements:
+1) Return **exactly one category** string per item; never output raw doc_type text.
 2) If multiple categories seem plausible, pick the single best fit using the guidance.
-3) If unsure, choose MISC.
+3) Ensure your answer covers all possible label meanings (i.e., consider the full label set).
+4) Use the categories description, priority order, and examples to guide your decision.
 
-Example:
-{example}
+Priority order:
+EASEMENT > SALE_DEED > DEED_OF_TRUST > MORTGAGE > LIEN > RELEASE > PLAT > MISC
+
+Examples:
+{examples}
 """
+# TODO: Compare guidelines:
+# Category guidance (choose best fit, never echo the input):
+# Task Requirements:
+# 1) Return **only one label**.
+# 2) If the text strongly matches multiple labels, choose the best fitting one.
+# 3) Ensure your answer covers all possible label meanings (i.e., consider the full label set)
+
+# TODO: Compare examples:
+EXAMPLES = {
+    "DOT": "DEED_OF_TRUST",
+    "SUBORDINATION": "DEED_OF_TRUST",
+    "FC": "DEED_OF_TRUST",
+    "AFDVT": "DEED_OF_TRUST",
+    "ASGMT": "DEED_OF_TRUST",
+    "C-SAT": "RELEASE",
+    "REL": "RELEASE",
+    "DEDICATION": "PLAT",
+    "MAP": "PLAT",
+    "JUDGMENT": "LIEN",
+    "UCC": "LIEN",
+    "UCC CONTINUATION": "LIEN",
+    "REST": "RELEASE",
+    "Q C D": "SALE_DEED",
+    "CORR D": "SALE_DEED",
+    "DEED": "SALE_DEED",
+    "TRS D": "SALE_DEED",
+    "TR-D": "SALE_DEED",
+    "REL D": "SALE_DEED",
+    "COVENANT/RESTRICTIVE COVENANTS": "MISC",
+    "AMENDMENT": "MISC",
+    "NOTICE": "MISC",
+    "CONDO": "MISC",
+    "PRE D/T": "MISC",
+    "SUBSTITUTE TRUSTEE": "DEED_OF_TRUST",
+    "FORECLOSURE NOTICE": "DEED_OF_TRUST",
+    "UCC AMENDMENT": "LIEN",
+    "SUBORDINATION OR RESUB AGREEME": "DEED_OF_TRUST",
+    "UCC FINANCING STATEMENT AMENDMENT": "LIEN",
+    "D & REL": "SALE_DEED", 
+    "SUB D": "SALE_DEED",
+    "TRUSTEES DEED": "SALE_DEED",
+    "SUBSTITUTE TRUSTEE'S DEED": "SALE_DEED",
+}  # TODO: refine illustrative examples as needed
 
 
-def build_system_prompt(categories: list[str] = ALLOWED_CATEGORIES) -> str:
+def build_system_prompt(categories: dict[str, str] | None, examples: dict[str, str] | None) -> str:
     """Render the classification system prompt for a batch of doc type strings."""
+    if not categories:
+        categories = ALLOWED_CATEGORIES
+    if not examples:
+        examples = EXAMPLES
+    
+    categories_str = "\n".join([f"- {category}: {description}" for category, description in categories.items()])
 
-    categories_str = "\n".join([f"- {category}" for category in categories])
-    example = json.dumps(
-        {
-            "DOT": "DEED_OF_TRUST",
-            # "SUBORDINATION": "DEED_OF_TRUST",
-            "SUBSTITUTE TRUSTEE": "DEED_OF_TRUST",
-            "FORECLOSURE NOTICE": "DEED_OF_TRUST",
-            "FC": "DEED_OF_TRUST",
-            "AFDVT": "DEED_OF_TRUST",
-            "ASGMT": "DEED_OF_TRUST",
-            "C-SAT": "RELEASE",
-            "REL": "RELEASE",
-            "DEDICATION": "PLAT",
-            "JUDGMENT": "LIEN",
-            "UCC": "LIEN",
-            "UCC FINANCING STATEMENT AMENDMENT": "LIEN",
-            "REST": "RELEASE",
-            "Q C D": "SALE_DEED",
-            "D & REL": "SALE_DEED", 
-            "SUB D": "SALE_DEED",
-            "CORR D": "SALE_DEED",
-            # "DEED": "SALE_DEED",
-            # "TRUSTEES DEED": "SALE_DEED",
-            "SUBSTITUTE TRUSTEE'S DEED": "SALE_DEED",
-            "REL D": "SALE_DEED",
-            "COVENANT/RESTRICTIVE COVENANTS": "MISC",
-            # "AMENDMENT": "MISC",
-            # "NOTICE": "MISC",
-        }
-    )  # TODO: refine illustrative examples as needed
-
-    return SYSTEM_PROMPT.format(categories=categories_str, example=example)
+    return SYSTEM_PROMPT.format(categories=categories_str, examples=json.dumps(examples))
 
 
 USER_PROMPT = """
@@ -262,21 +364,32 @@ Output a single JSON object where:
 - Each value is one of the categories above.
 - Do not add or remove keys. Do not return arrays. No explanations.
 """
+
 BOOST = 8.0  # stronger bias toward allowed labels
 PENALTY = -6.0  # slightly softer penalty to reduce clashes with sub-tokens
 
 
+def build_user_prompt(inputs: list[str]) -> str:
+    """Build the user prompt for the LLM."""
+
+    return USER_PROMPT.format(payload=json.dumps(inputs))
+
+
 def build_logit_bias(
     model_name: str,
-    categories: list[str] = ALLOWED_CATEGORIES,
-    offenders: list[str] = COMMON_OFFENDERS,
+    categories: Iterable[str] | None = None,  # TODO
+    offenders: list[str] | None = None,
     boost: float = BOOST,
     penalty: float = PENALTY,
-) -> dict[int, float]:
+) -> dict[str, int]:
     """
     Optionally bias generation toward allowed category tokens.
     Falls back gracefully when tokenization helpers are unavailable.
     """
+    if not offenders:
+        offenders = COMMON_OFFENDERS
+    if not categories:
+        categories = ALLOWED_CATEGORIES.keys()
 
     try:
         encoding = tiktoken.encoding_for_model(model_name)
@@ -299,7 +412,8 @@ def build_logit_bias(
         for token_id in encoding.encode(token):
             bias.setdefault(token_id, boost / 2)
 
-    return bias
+    # OpenAI expects string token IDs and integer bias values.
+    return {str(token_id): int(round(weight)) for token_id, weight in bias.items()}
 
 
 def validate_mapping(
@@ -315,7 +429,7 @@ def validate_mapping(
             LOGGER.warning("LLM response missing key; defaulting %s to UNKNOWN", item)
             category = "UNKNOWN"  # TODO: MISC
 
-        if category not in ALLOWED_CATEGORIES:
+        if category not in ALLOWED_CATEGORIES.keys():
             LOGGER.warning("LLM response with invalid category; defaulting %s to UNKNOWN", category)
 
             LOGGER.warning(f"{item} {category} not in ALLOWED_CATEGORIES")
@@ -337,7 +451,8 @@ def summarize_category_percentages(
     counts.setdefault("UNKNOWN", 0)
     summary: dict[str, dict[str, float]] = {}
 
-    for category in ALLOWED_CATEGORIES + ["UNKNOWN"]:
+    categories = list(ALLOWED_CATEGORIES.keys()) + ["UNKNOWN"]
+    for category in categories:
         count = counts.get(category)
         percentage = (count / total * 100.0) if total else 0.0
         summary[category] = {"count": count, "percentage": percentage}
@@ -350,17 +465,24 @@ def classify_batches(
     model_name: str,
     batch_size: int,
     cost_tracker: CostTracker,
+    categories: dict[str, str] | None = None,
+    examples: dict[str, str] | None = None,
 ) -> dict[str, str]:
-    """Classify doc_type strings in batches via OpenAI Chat Completions."""
+    """
+    Classify doc_type strings in batches via OpenAI Chat Completions.
+
+    Optionally supply a custom category map (name -> description) to align the
+    prompt and logit bias with a narrowed or adjusted label set.
+    """
 
     client = build_openai_client()
     # model = build_gemini_model(model_name)  # TODO
     final_mapping: dict[str, str] = {}
 
-    logit_bias = build_logit_bias(model_name)
+    logit_bias = build_logit_bias(model_name, categories=categories.keys() if categories else None)
 
     for idx in range(0, len(items), batch_size):
-        batch = items[idx : idx + batch_size]
+        batch = items[idx: idx + batch_size]
         # response = model.generate_content(prompt)  # TODO
         # usage = getattr(response, "usage_metadata", None)  # TODO
 
@@ -368,8 +490,8 @@ def classify_batches(
             response = client.chat.completions.create(
                 model=model_name,
                 messages=[
-                    {"role": "system", "content": build_system_prompt()},
-                    {"role": "user", "content": USER_PROMPT.format(payload=json.dumps(batch))},
+                    {"role": "system", "content": build_system_prompt(categories, examples)},
+                    {"role": "user", "content": build_user_prompt(batch)},
                 ],
                 temperature=TEMPERATURE,
                 top_p=TOP_P,
